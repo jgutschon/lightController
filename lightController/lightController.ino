@@ -9,7 +9,7 @@ CRGB leds[NUM_LEDS];
 
 #define UPDATES_PER_SECOND 100
 
-uint8_t paletteIndex = 0;
+int8_t paletteIndex = 0;
 CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
 
@@ -84,10 +84,6 @@ void cyclePalette(char data) {
     
     currentPalette = palettes[paletteIndex];
 }
-
-
-// FastLED preset palettes: RainbowColors_p, RainbowStripeColors_p,
-// OceanColors_p, CloudColors_p, LavaColors_p, ForestColors_p, and PartyColors_p.
 
 // Set up a palette of black and white stripes
 void SetupBlackAndWhiteStripedPalette() {
