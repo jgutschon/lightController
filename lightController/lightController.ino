@@ -9,12 +9,23 @@ CRGB leds[NUM_LEDS];
 
 #define UPDATES_PER_SECOND 100
 
-
+uint8_t paletteIndex = 0;
 CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
 
 extern CRGBPalette16 myRedWhiteBluePalette;
 extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
+
+CRGBPalette16 palettes[8] = {
+    RainbowColors_p,
+    RainbowStripeColors_p,
+    OceanColors_p,
+    CloudColors_p,
+    LavaColors_p,
+    ForestColors_p,
+    PartyColors_p,
+    myRedWhiteBluePalette_p
+};
 
 
 void setup() {
@@ -23,6 +34,8 @@ void setup() {
     delay(3000); // power-up safety delay
     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.setBrightness(BRIGHTNESS);
+
+    currentPalette = RainbowColors_p;
 }
 
 
@@ -31,12 +44,13 @@ void loop() {
         char data = Serial.read();
         // Serial.println(data);
         switch(data) {
-            case 'o': FastLED.setBrightness(BRIGHTNESS); break;
-            case 'f': FastLED.setBrightness(0); break;
+            case 'o': FastLED.setBrightness(BRIGHTNESS); break;   //lights on
+            case 'f': FastLED.setBrightness(0); break;            //lights off
+            case 'n': cyclePalette(data); break;                  //next palette
+            case 'p': cyclePalette(data); break;                  //previous palette
         }
     }
 
-    currentPalette = RainbowColors_p;
     currentBlending = LINEARBLEND;
     
     static uint8_t startIndex = 0;
@@ -57,41 +71,25 @@ void FillLEDsFromPaletteColors(uint8_t colorIndex) {
     }
 }
 
+void cyclePalette(char data) {
+    if (data == 'n')
+        paletteIndex++;
+    else if (data == 'p')
+        paletteIndex--;
+    
+    if (paletteIndex < 0)
+        paletteIndex = 7;
+    if (paletteIndex > 7)
+        paletteIndex = 0;
+    
+    currentPalette = palettes[paletteIndex];
+}
+
 
 // FastLED preset palettes: RainbowColors_p, RainbowStripeColors_p,
 // OceanColors_p, CloudColors_p, LavaColors_p, ForestColors_p, and PartyColors_p.
 
-// void ChangePalettePeriodically() {
-//     uint8_t secondHand = (millis() / 1000) % 60;
-//     static uint8_t lastSecond = 99;
-    
-//     if(lastSecond != secondHand) {
-//         lastSecond = secondHand;
-//         if(secondHand ==  0)  { currentPalette = RainbowColors_p;         currentBlending = LINEARBLEND; }
-//         if(secondHand == 10)  { currentPalette = RainbowStripeColors_p;   currentBlending = NOBLEND;  }
-//         if(secondHand == 15)  { currentPalette = RainbowStripeColors_p;   currentBlending = LINEARBLEND; }
-//         if(secondHand == 20)  { SetupPurpleAndGreenPalette();             currentBlending = LINEARBLEND; }
-//         if(secondHand == 25)  { SetupRandomPalette();                     currentBlending = LINEARBLEND; }
-//         if(secondHand == 30)  { SetupBlackAndWhiteStripedPalette();       currentBlending = NOBLEND; }
-//         if(secondHand == 35)  { SetupBlackAndWhiteStripedPalette();       currentBlending = LINEARBLEND; }
-//         if(secondHand == 40)  { currentPalette = CloudColors_p;           currentBlending = LINEARBLEND; }
-//         if(secondHand == 45)  { currentPalette = PartyColors_p;           currentBlending = LINEARBLEND; }
-//         if(secondHand == 50)  { currentPalette = myRedWhiteBluePalette_p; currentBlending = NOBLEND;  }
-//         if(secondHand == 55)  { currentPalette = myRedWhiteBluePalette_p; currentBlending = LINEARBLEND; }
-//     }
-// }
-
-// This function fills the palette with totally random colors.
-void SetupRandomPalette() {
-    for( int i = 0; i < 16; i++) {
-        currentPalette[i] = CHSV( random8(), 255, random8());
-    }
-}
-
-// This function sets up a palette of black and white stripes,
-// using code.  Since the palette is effectively an array of
-// sixteen CRGB colors, the various fill_* functions can be used
-// to set them up.
+// Set up a palette of black and white stripes
 void SetupBlackAndWhiteStripedPalette() {
     // 'black out' all 16 palette entries...
     fill_solid(currentPalette, 16, CRGB::Black);
