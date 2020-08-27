@@ -18,26 +18,23 @@ extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
 
 
 void setup() {
-    //Serial.begin(9600);
+    Serial.begin(9600);
 
     delay(3000); // power-up safety delay
     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.setBrightness(BRIGHTNESS);
-
-    // currentPalette = RainbowColors_p;
-    // currentBlending = LINEARBLEND;
 }
 
 
 void loop() {
-    // if(Serial.available()) {
-    //     char data = Serial.read();
-    //     // Serial.println(data);
-    //     switch(data) {
-    //         case 'o': FastLED.setBrightness(BRIGHTNESS); break;
-    //         case 'f': FastLED.setBrightness(0); break;
-    //     }
-    // }
+    if(Serial.available()) {
+        char data = Serial.read();
+        // Serial.println(data);
+        switch(data) {
+            case 'o': FastLED.setBrightness(BRIGHTNESS); break;
+            case 'f': FastLED.setBrightness(0); break;
+        }
+    }
 
     currentPalette = RainbowColors_p;
     currentBlending = LINEARBLEND;
