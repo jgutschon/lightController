@@ -124,7 +124,7 @@ void SetupPurpleAndGreenPalette() {
 // Example static color palette - 64 bytes of flash
 const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM = {
     CRGB::Red,
-    CRGB::Gray, // 'white' is too bright compared to red and blue
+    CRGB::Gray,
     CRGB::Blue,
     CRGB::Black,
     
