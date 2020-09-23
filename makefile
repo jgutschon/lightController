@@ -7,5 +7,5 @@ upload:
 	arduino-cli upload -b $(FQBN) -p COM4 ./lightController
 
 clean:
-	rm *.hex
-	rm *.elf
+	del /Q /F /S *.hex
+	del /Q /F /S *.elf
