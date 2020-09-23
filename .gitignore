@@ -1,2 +1,6 @@
+# binaries
 lightController/*.hex
 lightController/*.elf
+
+# vscode
+**/.vscode
