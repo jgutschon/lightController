@@ -1,10 +1,15 @@
 FQBN ?= arduino:avr:uno
+PORT ?= COM4
+
+ifdef v
+override v = -v
+endif
 
 build:
-	arduino-cli compile -b $(FQBN) ./lightController
+	arduino-cli compile $(v) -b $(FQBN) ./lightController
 
 upload:
-	arduino-cli upload -b $(FQBN) -p COM4 ./lightController
+	arduino-cli upload -b $(FQBN) -p $(PORT) ./lightController
 
 clean:
 	del /Q /F /S *.hex
